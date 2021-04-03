@@ -1,9 +1,6 @@
 package com.lordofthepushes.user.data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -17,6 +14,9 @@ public class UserData {
 
     @NotBlank(message = "cpf is mandatory")
     private String cpf;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isEnabled = false;
 
     public void setId(Integer id) {
         this.id = id;
@@ -40,5 +40,13 @@ public class UserData {
 
     public String getCpf() {
         return cpf;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }
