@@ -43,7 +43,7 @@ public class UserController {
         if (qtdPage < 1) {
             qtdPage = 1;
         }
-        pageNumber++;
+        pageNumber = pageNumber >= 1 ? pageNumber - 1 : pageNumber ;
         Pageable page = PageRequest.of(pageNumber, qtdPage);
         return userFacade.getAllUsers(page);
     }
