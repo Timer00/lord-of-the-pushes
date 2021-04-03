@@ -7,6 +7,7 @@ import com.lordofthepushes.user.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
@@ -25,13 +26,20 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void save(UserData user) {
-        userDAO.save(user);
+    public void saveUser(UserData userData) {
+        userDAO.save(userData);
     }
 
     @Override
-    public void delete(UserData user) {
-        userDAO.delete(user);
+    public void updateUser(UserData userData) {
+        saveUser(userData);
+    }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        UserData user = getUserById(userId);
+        user.setEnabled(false);
+        saveUser(user);
     }
 
     @Override
@@ -46,5 +54,10 @@ public class DefaultUserService implements UserService {
     @Override
     public Iterable<UserData> getAllUsers() {
         return userDAO.findAll();
+    }
+
+    @Override
+    public Iterable<UserData> getAllUsers(Pageable page) {
+        return userDAO.findAll(page);
     }
 }
