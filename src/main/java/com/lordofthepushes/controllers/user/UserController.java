@@ -1,19 +1,20 @@
-package com.lordofthepushes.user.controllers;
+package com.lordofthepushes.controllers.user;
 
-import com.lordofthepushes.user.data.UserData;
-import com.lordofthepushes.user.facades.UserFacade;
+import com.lordofthepushes.data.UserData;
+import com.lordofthepushes.facades.user.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping(path = {"/api/users"})
 public class UserController {
 
+    @Resource
     private UserFacade userFacade;
 
     @Autowired

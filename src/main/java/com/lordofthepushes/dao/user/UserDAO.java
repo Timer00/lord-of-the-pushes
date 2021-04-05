@@ -1,6 +1,6 @@
-package com.lordofthepushes.user.dao;
+package com.lordofthepushes.dao.user;
 
-import com.lordofthepushes.user.data.UserData;
+import com.lordofthepushes.data.UserData;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

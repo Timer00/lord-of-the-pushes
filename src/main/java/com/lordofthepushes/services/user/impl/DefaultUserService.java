@@ -1,9 +1,9 @@
-package com.lordofthepushes.user.services.impl;
+package com.lordofthepushes.services.user.impl;
 
-import com.lordofthepushes.user.exceptions.UnknownIdentifierException;
-import com.lordofthepushes.user.dao.UserDAO;
-import com.lordofthepushes.user.data.UserData;
-import com.lordofthepushes.user.services.UserService;
+import com.lordofthepushes.exceptions.UnknownIdentifierException;
+import com.lordofthepushes.dao.user.UserDAO;
+import com.lordofthepushes.data.UserData;
+import com.lordofthepushes.services.user.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class DefaultUserService implements UserService {
     @Override
     public void deleteUser(Integer userId) {
         UserData user = getUserById(userId);
-        user.setEnabled(false);
+        user.setActive(false);
         saveUser(user);
     }
 
