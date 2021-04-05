@@ -1,14 +1,13 @@
-package com.lordofthepushes.user.facades.impl;
+package com.lordofthepushes.facades.user.impl;
 
-import com.lordofthepushes.user.data.UserData;
-import com.lordofthepushes.user.facades.UserFacade;
-import com.lordofthepushes.user.services.UserService;
+import com.lordofthepushes.data.UserData;
+import com.lordofthepushes.facades.user.UserFacade;
+import com.lordofthepushes.services.user.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 @Component
 public class DefaultUserFacade implements UserFacade {
