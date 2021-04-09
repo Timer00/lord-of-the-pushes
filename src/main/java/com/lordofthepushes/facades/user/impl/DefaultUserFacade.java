@@ -36,12 +36,12 @@ public class DefaultUserFacade implements UserFacade {
     }
 
     @Override
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         userService.deleteUser(userId);
     }
 
     @Override
-    public UserData getUserById(Integer userId) {
+    public UserData getUserById(Long userId) {
         LOG.debug("Entering getUserById in DefaultUserFacade.class...");
 
         return userService.getUserById(userId);

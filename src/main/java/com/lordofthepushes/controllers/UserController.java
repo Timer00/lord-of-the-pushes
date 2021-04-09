@@ -1,4 +1,4 @@
-package com.lordofthepushes.controllers.user;
+package com.lordofthepushes.controllers;
 
 import com.lordofthepushes.data.UserData;
 import com.lordofthepushes.facades.user.UserFacade;
@@ -7,36 +7,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = {"/api/users"})
 public class UserController {
 
-    @Resource
     private UserFacade userFacade;
 
-    @Autowired
-    public void setClientFacade(UserFacade userFacade) {
-        this.userFacade = userFacade;
-    }
-
-    public UserFacade getClientFacade() {
-        return userFacade;
-    }
-
-    @RequestMapping(method = {RequestMethod.GET})
+    @RequestMapping(path = {"/users"}, method = {RequestMethod.GET})
     public Iterable<UserData> getAllUsers() {
         return userFacade.getAllUsers();
     }
 
-    @RequestMapping(path = "/{userId}")
-    public UserData getClientById(@PathVariable(value = "userId") Integer userId) {
+    @RequestMapping(path = "/users/{userId}")
+    public UserData getClientById(@PathVariable(value = "userId") Long userId) {
         return userFacade.getUserById(userId);
     }
 
-    @RequestMapping(path = {"/page/{pageNumber}/{qtdPage}"}, method = {RequestMethod.GET})
+    @RequestMapping(path = {"/users/page/{pageNumber}/{qtdPage}"}, method = {RequestMethod.GET})
     Iterable<UserData> getUsersByPage(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
         if (qtdPage > 5 ) {
             qtdPage = 5;
@@ -49,21 +37,26 @@ public class UserController {
         return userFacade.getAllUsers(page);
     }
 
-    @RequestMapping(value = "/save", method = {RequestMethod.POST})
-    public UserData saveUser(@RequestBody @Valid UserData userData) {
+    @RequestMapping(value = "/users/save", method = {RequestMethod.POST})
+    public UserData saveUser(@Valid UserData userData) {
         userFacade.saveUser(userData);
         return userData;
     }
 
-    @RequestMapping(value = "/update", method = {RequestMethod.POST, RequestMethod.PATCH})
-    public UserData updateUser(@RequestBody @Valid UserData userData) {
+    @RequestMapping(value = "/users/update", method = {RequestMethod.POST, RequestMethod.PATCH})
+    public UserData updateUser(@Valid UserData userData) {
         userFacade.updateUser(userData);
         return userData;
     }
 
-    @RequestMapping(value = {"/delete"}, method = {RequestMethod.POST, RequestMethod.DELETE})
-    public String deleteUser(@RequestParam(value = "userID") Integer userId) {
+    @RequestMapping(value = {"/users/users/delete"}, method = {RequestMethod.POST, RequestMethod.DELETE})
+    public String deleteUser(@RequestParam(value = "userID") Long userId) {
         userFacade.deleteUser(userId);
     return "{200}";
+    }
+
+    @Autowired
+    public void setClientFacade(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 }
