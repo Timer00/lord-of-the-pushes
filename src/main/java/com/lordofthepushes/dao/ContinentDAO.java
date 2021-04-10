@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface ContinentDAO extends PagingAndSortingRepository<ContinentData, Long> {
 
     ContinentData findByContinentIsoCode(String isoCode);
+    ContinentData findByContinentName(String name);
 }

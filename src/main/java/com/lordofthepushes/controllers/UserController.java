@@ -1,7 +1,7 @@
 package com.lordofthepushes.controllers;
 
 import com.lordofthepushes.data.UserData;
-import com.lordofthepushes.facades.user.UserFacade;
+import com.lordofthepushes.facades.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

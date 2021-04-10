@@ -1,6 +1,8 @@
 package com.lordofthepushes.exceptions;
 
-public class UnknownIdentifierException extends IllegalArgumentException {
+import java.io.Serializable;
+
+public class UnknownIdentifierException extends IllegalArgumentException implements Serializable {
     public UnknownIdentifierException(String errorMessage) {
         super(errorMessage);
     }

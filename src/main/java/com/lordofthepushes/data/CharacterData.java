@@ -34,8 +34,12 @@ public class CharacterData implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserData user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "adventure_table_id", nullable = false)
+    private AdventureTableData table;
 
     public void setCharacterId(Integer character_id) {
         this.characterId = character_id;

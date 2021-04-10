@@ -1,10 +1,10 @@
-package com.lordofthepushes.services.user.impl;
+package com.lordofthepushes.services.impl;
 
 import com.lordofthepushes.dao.CharacterDAO;
 import com.lordofthepushes.exceptions.UnknownIdentifierException;
 import com.lordofthepushes.dao.UserDAO;
 import com.lordofthepushes.data.UserData;
-import com.lordofthepushes.services.user.UserService;
+import com.lordofthepushes.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +18,6 @@ public class DefaultUserService implements UserService {
 
     private UserDAO userDAO;
     private CharacterDAO characterDAO;
-
-    @Autowired
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
-
-    @Autowired
-    private void setCharacterDAO(CharacterDAO characterDAO) {
-        this.characterDAO = characterDAO;
-    }
-
-
-    private CharacterDAO getCharacterDAO() {
-        return characterDAO;
-    }
 
     @Override
     public void saveUser(UserData userData) {
@@ -68,13 +49,29 @@ public class DefaultUserService implements UserService {
 
     @Override
     public Iterable<UserData> getAllUsers() {
-//        Iterable<UserData> users = userDAO.findAll();
-//        users.forEach(p -> p.setCharacters(characterDAO.findByUser(p)));
         return userDAO.findAll();
     }
 
     @Override
     public Iterable<UserData> getAllUsers(Pageable page) {
         return userDAO.findAll(page);
+    }
+
+    @Autowired
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public UserDAO getUserDAO() {
+        return userDAO;
+    }
+
+    @Autowired
+    private void setCharacterDAO(CharacterDAO characterDAO) {
+        this.characterDAO = characterDAO;
+    }
+
+    private CharacterDAO getCharacterDAO() {
+        return characterDAO;
     }
 }

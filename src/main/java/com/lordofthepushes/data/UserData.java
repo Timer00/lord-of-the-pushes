@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,6 +14,7 @@ import java.util.Set;
 public class UserData implements Serializable {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
@@ -48,12 +50,12 @@ public class UserData implements Serializable {
     private CountryData country;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<CharacterData> characters;
+    private List<CharacterData> characters;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_table",
-            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "adventure_table_id", referencedColumnName = "adventure_table_id"))
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_tables",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "adventure_table_id", referencedColumnName = "adventure_table_id", nullable = false, updatable = false)})
     private Set<AdventureTableData> tables;
 
     public void setUserId(Long user_id) {
@@ -136,11 +138,11 @@ public class UserData implements Serializable {
         return country;
     }
 
-    public void setCharacters(Set<CharacterData> characters) {
+    public void setCharacters(List<CharacterData> characters) {
         this.characters = characters;
     }
 
-    public Set<CharacterData> getCharacters() {
+    public List<CharacterData> getCharacters() {
         return characters;
     }
 

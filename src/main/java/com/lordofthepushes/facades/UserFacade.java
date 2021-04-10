@@ -1,4 +1,4 @@
-package com.lordofthepushes.facades.user;
+package com.lordofthepushes.facades;
 
 import com.lordofthepushes.data.UserData;
 import org.springframework.data.domain.Pageable;

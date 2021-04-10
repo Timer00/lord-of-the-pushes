@@ -1,4 +1,4 @@
-package com.lordofthepushes.services.user;
+package com.lordofthepushes.services;
 
 import com.lordofthepushes.data.UserData;
 import org.springframework.data.domain.Pageable;
