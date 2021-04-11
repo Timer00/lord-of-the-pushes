@@ -40,6 +40,5 @@ out/
 database/
 target/
 
-### Maven ###
-mvnw*
-.mvn/
+### Misc ###
+*.log

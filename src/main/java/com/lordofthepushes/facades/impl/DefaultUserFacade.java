@@ -1,8 +1,8 @@
-package com.lordofthepushes.facades.user.impl;
+package com.lordofthepushes.facades.impl;
 
 import com.lordofthepushes.data.UserData;
-import com.lordofthepushes.facades.user.UserFacade;
-import com.lordofthepushes.services.user.UserService;
+import com.lordofthepushes.facades.UserFacade;
+import com.lordofthepushes.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +36,12 @@ public class DefaultUserFacade implements UserFacade {
     }
 
     @Override
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         userService.deleteUser(userId);
     }
 
     @Override
-    public UserData getUserById(Integer userId) {
+    public UserData getUserById(Long userId) {
         LOG.debug("Entering getUserById in DefaultUserFacade.class...");
 
         return userService.getUserById(userId);

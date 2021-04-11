@@ -1,55 +1,75 @@
 package com.lordofthepushes.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "country")
+@Table(name = "countries")
 public class CountryData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer country_id;
+    private Long countryId;
 
     @NotBlank
-    private String country_name;
+    private String countryName;
 
     @NotBlank
-    private String continent_name;
+    @Column(unique = true)
+    private String countryIsoCode;
 
-    @OneToMany(mappedBy = "country", targetEntity= UserData.class)
-    private List<UserData> users;
+    @JsonIgnore
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY,
+            targetEntity= UserData.class,
+            cascade = CascadeType.ALL)
+    private Set<UserData> users;
 
-    public void setCountry_id(Integer country_id) {
-        this.country_id = country_id;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "continent_id", nullable = false)
+    private ContinentData continent;
+
+    public void setCountryId(Long country_id) {
+        this.countryId = country_id;
     }
 
-    public Integer getCountry_id() {
-        return country_id;
+    public Long getCountryId() {
+        return countryId;
     }
 
-    public void setUsers(List<UserData> users) {
+    public void setCountryName(String country_name) {
+        this.countryName = country_name;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setUsers(Set<UserData> users) {
         this.users = users;
     }
 
-    public List<UserData> getUsers() {
+    public Set<UserData> getUsers() {
         return users;
     }
 
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
+    public void setCountryIsoCode(String country_iso_code) {
+        this.countryIsoCode = country_iso_code;
     }
 
-    public String getCountry_name() {
-        return country_name;
+    public String getCountryIsoCode() {
+        return countryIsoCode;
     }
 
-    public void setContinent_name(String continent_name) {
-        this.continent_name = continent_name;
+    public void setContinent(ContinentData continent) {
+        this.continent = continent;
     }
 
-    public String getContinent_name() {
-        return continent_name;
+    public ContinentData getContinent() {
+        return continent;
     }
 }

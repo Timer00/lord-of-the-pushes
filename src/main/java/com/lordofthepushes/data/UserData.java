@@ -5,30 +5,31 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserData implements Serializable {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer user_id;
+    private Long userId;
 
     @NotBlank(message = "First name is mandatory")
-    private String first_name;
+    private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    private String last_name;
+    private String lastName;
 
-    private String full_name;
+    private String fullName;
 
     @Column(columnDefinition = "boolean default true")
     private Boolean active;
 
+    @Column(unique = true)
     @NotBlank(message = "Email is mandatory")
     private String email;
 
@@ -42,51 +43,51 @@ public class UserData implements Serializable {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "timestamp default current_timestamp")
-    private Date created_at;
+    private Date createdAt;
 
-    @ManyToOne(targetEntity= CountryData.class)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, targetEntity= CountryData.class)
     @JoinColumn(name = "country_id", nullable = false)
     private CountryData country;
 
-    @OneToMany(mappedBy = "character_id", targetEntity = CharacterData.class)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<CharacterData> characters;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_table",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "adventure_table_id", referencedColumnName = "adventure_table_id"))
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_tables",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "adventure_table_id", referencedColumnName = "adventure_table_id", nullable = false, updatable = false)})
     private Set<AdventureTableData> tables;
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long user_id) {
+        this.userId = user_id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String first_name) {
+        this.firstName = first_name;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String last_name) {
+        this.lastName = last_name;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String full_name) {
+        this.fullName = full_name;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
     public void setActive(Boolean active) {
@@ -121,12 +122,12 @@ public class UserData implements Serializable {
         return birthday;
     }
 
-    private void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    private void setCreatedAt(Date created_at) {
+        this.createdAt = created_at;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public void setCountry(CountryData country) {
