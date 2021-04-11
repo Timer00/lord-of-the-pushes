@@ -2,6 +2,7 @@ package com.lordofthepushes.controllers;
 
 import com.lordofthepushes.data.UserData;
 import com.lordofthepushes.facades.UserFacade;
+import com.lordofthepushes.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +27,7 @@ public class UserController {
 
     @RequestMapping(path = {"/users/page/{pageNumber}/{qtdPage}"}, method = {RequestMethod.GET})
     Iterable<UserData> getUsersByPage(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
-        if (qtdPage > 5 ) {
-            qtdPage = 5;
-        }
-        if (qtdPage < 1) {
-            qtdPage = 1;
-        }
-        pageNumber = pageNumber >= 1 ? pageNumber - 1 : pageNumber ;
-        Pageable page = PageRequest.of(pageNumber, qtdPage);
+        Pageable page = Util.verifyPageable(pageNumber, qtdPage);
         return userFacade.getAllUsers(page);
     }
 

@@ -27,7 +27,4 @@ public class CharacterController {
         this.characterFacade = characterFacade;
     }
 
-    public CharacterFacade getCharacterFacade() {
-        return characterFacade;
-    }
 }

@@ -1,21 +1,19 @@
 package com.lordofthepushes.controllers;
 
-import com.lordofthepushes.dao.CountryDAO;
 import com.lordofthepushes.data.ContinentData;
 import com.lordofthepushes.data.CountryData;
+import com.lordofthepushes.facades.ContinentFacade;
 import com.lordofthepushes.facades.CountryFacade;
+import com.lordofthepushes.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CountryController {
 
     private CountryFacade countryFacade;
+    private ContinentFacade continentFacade;
 
     @RequestMapping(path = {"/countries"}, method = {RequestMethod.GET})
     public Iterable<CountryData> showAllCountries() {
@@ -23,16 +21,22 @@ public class CountryController {
     }
 
     @RequestMapping(path = {"/countries/page/{pageNumber}/{qtdPage}"})
-    public Iterable<CountryData> showAllCountriesByContinent(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
-        if (qtdPage > 5 ) {
-            qtdPage = 5;
-        }
-        if (qtdPage < 1) {
-            qtdPage = 1;
-        }
-        pageNumber = pageNumber >= 1 ? pageNumber - 1 : pageNumber ;
-        Pageable page = PageRequest.of(pageNumber, qtdPage);
+    public Iterable<CountryData> showAllCountries(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
+        Pageable page = Util.verifyPageable(pageNumber, qtdPage);
         return countryFacade.findAll(page);
+    }
+
+    @RequestMapping(path = {"/countries"}, params = {"continentIso"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public Iterable<CountryData> showAllCountriesByContinent(@RequestParam("continentIso") String continentIso) {
+        ContinentData continent = continentFacade.findByContinentIsoCode(continentIso);
+        return countryFacade.findAllByContinent(continent);
+    }
+
+    @RequestMapping(path = {"/countries/page/{pageNumber}/{qtdPage}"}, params = {"continentIso"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public Iterable<CountryData> showAllCountriesByContinent(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage, @RequestParam("continentIso") String continentIso) {
+        ContinentData continent = continentFacade.findByContinentIsoCode(continentIso);
+        Pageable page = Util.verifyPageable(pageNumber, qtdPage);
+        return countryFacade.findAllByContinent(continent, page);
     }
 
     @Autowired
@@ -40,7 +44,8 @@ public class CountryController {
         this.countryFacade = countryFacade;
     }
 
-    public CountryFacade getCountryFacade() {
-        return countryFacade;
+    @Autowired
+    public void setContinentFacade(ContinentFacade continentFacade) {
+        this.continentFacade = continentFacade;
     }
 }
