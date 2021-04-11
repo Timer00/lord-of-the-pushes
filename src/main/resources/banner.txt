@@ -1,0 +1,14 @@
+--------------------------------------------------------------------------
+Application Name : ${application.title}
+Application Version : ${application.version}
+Application Formatted Version : ${application.formatted-version}
+Spring Boot Version : ${spring-boot-version}
+Spring Boot Formatted Version : ${spring-boot.formatted-version}
+Message: There is only Passion.
+         Through Passion I gain Strength.
+         Through Strength I gain Power.
+         Through Power I gain Victory.
+         Through Victory my chains are Broken
+         The Force shall free me
+         Peace is a lie.
+--------------------------------------------------------------------------
