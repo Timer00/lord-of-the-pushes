@@ -1,26 +1,29 @@
 package com.lordofthepushes.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "characters")
 public class CharacterData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer character_id;
+    private Integer characterId;
 
     @NotBlank(message = "First name is mandatory")
-    private String first_name;
+    private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    private String last_name;
+    private String lastName;
 
-    private String full_name;
+    private String fullName;
 
     @Column(columnDefinition = "boolean default true")
     private Boolean enabled;
@@ -29,40 +32,45 @@ public class CharacterData implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date created_at;
 
-    @ManyToOne(targetEntity = UserData.class)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserData user;
 
-    public void setCharacter_id(Integer character_id) {
-        this.character_id = character_id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "adventure_table_id", nullable = false)
+    private AdventureTableData table;
+
+    public void setCharacterId(Integer character_id) {
+        this.characterId = character_id;
     }
 
-    public Integer getCharacter_id() {
-        return character_id;
+    public Integer getCharacterId() {
+        return characterId;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String first_name) {
+        this.firstName = first_name;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String last_name) {
+        this.lastName = last_name;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String full_name) {
+        this.fullName = full_name;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
     public void setEnabled(Boolean enabled) {
