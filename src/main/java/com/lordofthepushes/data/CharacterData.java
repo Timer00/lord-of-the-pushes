@@ -7,15 +7,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "characters")
 public class CharacterData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer characterId;
+    private Long characterId;
 
     @NotBlank(message = "First name is mandatory")
     private String firstName;
@@ -30,7 +28,7 @@ public class CharacterData implements Serializable {
 
     @CreationTimestamp
     @Temporal(TemporalType.DATE)
-    private Date created_at;
+    private Date createdAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,11 +39,11 @@ public class CharacterData implements Serializable {
     @JoinColumn(name = "adventure_table_id", nullable = false)
     private AdventureTableData table;
 
-    public void setCharacterId(Integer character_id) {
+    public void setCharacterId(Long character_id) {
         this.characterId = character_id;
     }
 
-    public Integer getCharacterId() {
+    public Long getCharacterId() {
         return characterId;
     }
 
@@ -81,12 +79,12 @@ public class CharacterData implements Serializable {
         return enabled;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date created_at) {
+        this.createdAt = created_at;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public void setUser(UserData user) {
@@ -95,5 +93,13 @@ public class CharacterData implements Serializable {
 
     public UserData getUser() {
         return user;
+    }
+
+    public void setTable(AdventureTableData table) {
+        this.table = table;
+    }
+
+    public AdventureTableData getTable() {
+        return table;
     }
 }

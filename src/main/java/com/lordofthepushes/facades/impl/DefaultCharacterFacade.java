@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class DefaultCharacterFacade implements CharacterFacade {
     private CharacterService characterService;
@@ -32,22 +34,22 @@ public class DefaultCharacterFacade implements CharacterFacade {
     }
 
     @Override
-    public Iterable<CharacterData> getAllCharactersByUser(Long userId) {
+    public List<CharacterData> getAllCharactersByUser(Long userId) {
         return characterService.getAllCharactersByUser(userId);
     }
 
     @Override
-    public Iterable<CharacterData> getAllCharactersByUser(Long userId, Pageable page) {
+    public List<CharacterData> getAllCharactersByUser(Long userId, Pageable page) {
         return null;
     }
 
     @Override
-    public Iterable<CharacterData> getAllCharacterByTable(Long tableId) {
+    public List<CharacterData> getAllCharacterByTable(Long tableId) {
         return null;
     }
 
     @Override
-    public Iterable<CharacterData> getAllCharacterByTable(Long tableId, Pageable page) {
+    public List<CharacterData> getAllCharacterByTable(Long tableId, Pageable page) {
         return null;
     }
 

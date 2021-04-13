@@ -4,7 +4,6 @@ import com.lordofthepushes.data.UserData;
 import com.lordofthepushes.facades.UserFacade;
 import com.lordofthepushes.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +37,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/update", method = {RequestMethod.POST, RequestMethod.PATCH})
-    public UserData updateUser(@Valid UserData userData) {
+    public UserData updateUser(@RequestBody UserData userData) {
         userFacade.updateUser(userData);
         return userData;
     }

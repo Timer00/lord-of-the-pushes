@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class CharacterController {
 
     private CharacterFacade characterFacade;
 
     @RequestMapping(path = {"/characters"}, params = {"user"})
-    private Iterable<CharacterData> getCharactersByUser(@RequestParam(value = "user") Long userId) {
+    private List<CharacterData> getCharactersByUser(@RequestParam(value = "user") Long userId) {
         return characterFacade.getAllCharactersByUser(userId);
     }
 
