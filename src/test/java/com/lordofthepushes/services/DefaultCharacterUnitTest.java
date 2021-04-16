@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.lordofthepushes.util.Util.verifyPageable;
 import static org.mockito.Mockito.*;
 
 public class DefaultCharacterUnitTest {
@@ -28,6 +30,11 @@ public class DefaultCharacterUnitTest {
 
     private static final Long USER_ID = 1L;
     private static final Long ADVENTURE_TABLE_ID = 1L;
+
+    private static final Integer PAGE_NUMBER = 1;
+    private static final Integer QTD_PAGE = 1;
+
+    private final Pageable PAGE = verifyPageable(PAGE_NUMBER, QTD_PAGE);
 
     private static final Long CHARACTER_ID = 1L;
     private static final Boolean CHARACTER_ENABLED = true;
@@ -83,22 +90,23 @@ public class DefaultCharacterUnitTest {
         updatedCharacter.setFirstName("NewParseval");
 
         when(characterDAO.findByCharacterId(CHARACTER_ID)).thenReturn(updatedCharacter);
-        when(characterDAO.update(Mockito.any(CharacterData.class))).thenReturn(updatedCharacter);
+        when(characterDAO.save(Mockito.any(CharacterData.class))).thenReturn(updatedCharacter);
 
         CharacterData result = characterService.updateCharacter(updatedCharacter);
 
-        verify(characterDAO, times(1)).update(updatedCharacter);
+        verify(characterDAO, times(1)).save(updatedCharacter);
         Assertions.assertEquals(updatedCharacter, result);
     }
 
     @Test
     public void getAllCharactersTest() {
         final List<CharacterData> characterModels = Collections.singletonList(characterModel);
-        when(characterDAO.getAll()).thenReturn(characterModels);
+        when(characterDAO.findAll()).thenReturn(characterModels);
         final List<CharacterData> result = characterService.getAllCharacters();
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(characterModels, result);
         Assertions.assertEquals(characterModel, result.get(0));
+        verify(characterDAO, times(1)).findAll();
     }
 
     @Test
@@ -118,9 +126,11 @@ public class DefaultCharacterUnitTest {
         final List<CharacterData> characterModels = Collections.singletonList(characterModel);
 
         when(characterDAO.findByUserUserId(USER_ID)).thenReturn(characterModels);
+        when(characterDAO.findByUserUserId(USER_ID, PAGE)).thenReturn(characterModels);
         when(characterDAO.findByUser(userModel)).thenReturn(characterModels);
 
         final List<CharacterData> resultByUserId = characterService.getAllCharactersByUser(USER_ID);
+        final List<CharacterData> resultByUserPageable = characterService.getAllCharactersByUser(USER_ID, PAGE);
         final List<CharacterData> resultByUser = characterService.getAllCharactersByUser(userModel);
 
         Assertions.assertEquals(1, resultByUserId.size());
@@ -130,6 +140,10 @@ public class DefaultCharacterUnitTest {
         Assertions.assertEquals(1, resultByUser.size());
         Assertions.assertEquals(characterModels, resultByUser);
         Assertions.assertEquals(characterModel, resultByUser.get(0));
+
+        Assertions.assertEquals(1, resultByUserPageable.size());
+        Assertions.assertEquals(characterModels, resultByUserPageable);
+        Assertions.assertEquals(characterModel, resultByUserPageable.get(0));
     }
 
     @Test
@@ -137,10 +151,14 @@ public class DefaultCharacterUnitTest {
         final List<CharacterData> characterModels = Collections.singletonList(characterModel);
 
         when(characterDAO.findByTable(Mockito.any(AdventureTableData.class))).thenReturn(characterModels);
+        when(characterDAO.findByTable(Mockito.any(AdventureTableData.class), Mockito.any(Pageable.class))).thenReturn(characterModels);
         when(characterDAO.findByTableAdventureTableId(ADVENTURE_TABLE_ID)).thenReturn(characterModels);
+        when(characterDAO.findByTableAdventureTableId(ADVENTURE_TABLE_ID, PAGE)).thenReturn(characterModels);
 
         final List<CharacterData> resultByTable = characterService.getAllCharacterByTable(adventureTableModel);
+        final List<CharacterData> resultByTablePageable = characterService.getAllCharacterByTable(adventureTableModel, PAGE);
         final List<CharacterData> resultByTableId = characterService.getAllCharacterByTable(ADVENTURE_TABLE_ID);
+        final List<CharacterData> resultByTableIdPageable = characterService.getAllCharacterByTable(ADVENTURE_TABLE_ID, PAGE);
 
         Assertions.assertEquals(1, resultByTable.size());
         Assertions.assertEquals(characterModels, resultByTable);
@@ -149,6 +167,20 @@ public class DefaultCharacterUnitTest {
         Assertions.assertEquals(1, resultByTableId.size());
         Assertions.assertEquals(characterModels, resultByTableId);
         Assertions.assertEquals(characterModel, resultByTableId.get(0));
+
+        Assertions.assertEquals(1, resultByTableIdPageable.size());
+        Assertions.assertEquals(characterModels, resultByTableIdPageable);
+        Assertions.assertEquals(characterModel, resultByTableIdPageable.get(0));
+
+        Assertions.assertEquals(1, resultByTablePageable.size());
+        Assertions.assertEquals(characterModels, resultByTablePageable);
+        Assertions.assertEquals(characterModel, resultByTablePageable.get(0));
+    }
+
+    @Test
+    public void getCharacterDAOTest() {
+        final CharacterDAO characterDaoTest = characterService.getCharacterDAO();
+        Assertions.assertEquals(characterDAO, characterDaoTest);
     }
 
 }
