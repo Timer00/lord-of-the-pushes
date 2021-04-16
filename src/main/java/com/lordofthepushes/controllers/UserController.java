@@ -4,11 +4,12 @@ import com.lordofthepushes.data.UserData;
 import com.lordofthepushes.facades.UserFacade;
 import com.lordofthepushes.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.lordofthepushes.util.Util.verifyPageable;
 
 @RestController
 public class UserController {
@@ -27,7 +28,7 @@ public class UserController {
 
     @RequestMapping(path = {"/users/page/{pageNumber}/{qtdPage}"}, method = {RequestMethod.GET})
     Iterable<UserData> getUsersByPage(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
-        Pageable page = Util.verifyPageable(pageNumber, qtdPage);
+        Pageable page = verifyPageable(pageNumber, qtdPage);
         return userFacade.getAllUsers(page);
     }
 
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/update", method = {RequestMethod.POST, RequestMethod.PATCH})
-    public UserData updateUser(@Valid UserData userData) {
+    public UserData updateUser(@RequestBody UserData userData) {
         userFacade.updateUser(userData);
         return userData;
     }
