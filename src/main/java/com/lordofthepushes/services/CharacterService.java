@@ -1,5 +1,6 @@
 package com.lordofthepushes.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lordofthepushes.data.AdventureTableData;
 import com.lordofthepushes.data.CharacterData;
 import com.lordofthepushes.data.UserData;

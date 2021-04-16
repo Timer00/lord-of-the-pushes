@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.lordofthepushes.util.Util.verifyPageable;
+
 @RestController
 public class UserController {
 
@@ -26,7 +28,7 @@ public class UserController {
 
     @RequestMapping(path = {"/users/page/{pageNumber}/{qtdPage}"}, method = {RequestMethod.GET})
     Iterable<UserData> getUsersByPage(@PathVariable(value = "pageNumber") Integer pageNumber, @PathVariable("qtdPage") Integer qtdPage) {
-        Pageable page = Util.verifyPageable(pageNumber, qtdPage);
+        Pageable page = verifyPageable(pageNumber, qtdPage);
         return userFacade.getAllUsers(page);
     }
 

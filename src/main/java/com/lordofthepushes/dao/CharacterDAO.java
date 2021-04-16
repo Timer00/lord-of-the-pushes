@@ -11,9 +11,8 @@ import java.util.List;
 
 @Repository("characterDAO")
 public interface CharacterDAO extends PagingAndSortingRepository<CharacterData, Long> {
-    CharacterData update(CharacterData character);
     CharacterData findByCharacterId(Long characterId);
-    List<CharacterData> getAll();
+    List<CharacterData> findAll();
     List<CharacterData> findByUser(UserData userData);
     List<CharacterData> findByUserUserId(Long userId);
     List<CharacterData> findByUserUserId(Long userId, Pageable page);

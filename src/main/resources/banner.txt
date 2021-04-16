@@ -1,9 +1,6 @@
 --------------------------------------------------------------------------
-Application Name : ${application.title}
-Application Version : ${application.version}
-Application Formatted Version : ${application.formatted-version}
-Spring Boot Version : ${spring-boot-version}
-Spring Boot Formatted Version : ${spring-boot.formatted-version}
+Application Name : Lord of the Pushes
+
 Message: There is only Passion.
          Through Passion I gain Strength.
          Through Strength I gain Power.

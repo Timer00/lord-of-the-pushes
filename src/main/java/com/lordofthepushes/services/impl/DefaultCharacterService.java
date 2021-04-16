@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+import static com.lordofthepushes.util.Util.getJson;
+
+@Service("characterService")
 public class DefaultCharacterService implements CharacterService {
 
     private final Logger LOG = LoggerFactory.getLogger(DefaultCharacterService.class);
@@ -23,6 +25,7 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public CharacterData saveCharacter(CharacterData characterData) throws IllegalArgumentException {
+        LOG.debug("Saving character: " + getJson(characterData));
         if (characterData.getFullName().equals("") || characterData.getFullName() == null) {
             characterData.setFullName(characterData.getFirstName().replaceAll(" ", "")
                     + " " + characterData.getLastName().replaceAll(" ", ""));
@@ -39,7 +42,7 @@ public class DefaultCharacterService implements CharacterService {
 
             throw new UnknownIdentifierException("Failed to get character with id: " + characterData.getCharacterId());
         }
-        return characterDAO.update(characterData);
+        return characterDAO.save(characterData);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public List<CharacterData> getAllCharacters() {
-        return characterDAO.getAll();
+        return characterDAO.findAll();
     }
 
     @Override
@@ -117,6 +120,7 @@ public class DefaultCharacterService implements CharacterService {
     public List<CharacterData> getAllCharacterByTable(Long tableId) {
         return characterDAO.findByTableAdventureTableId(tableId);
     }
+
     @Override
     public List<CharacterData> getAllCharacterByTable(Long tableId, Pageable page) {
         return characterDAO.findByTableAdventureTableId(tableId, page);
