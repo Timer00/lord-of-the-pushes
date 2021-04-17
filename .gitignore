@@ -46,7 +46,7 @@ target/
 
 ### Docker ###
 docker/lordofthepushes-app/mvn_repo/*
-!docker/lordofthepushes-db
+!docker/lordofthepushes-db/*
 !docker/lordofthepushes-db/scripts
-docker/lordofthepushes-db/postgres/*
+docker/lordofthepushes-db/postgres
 

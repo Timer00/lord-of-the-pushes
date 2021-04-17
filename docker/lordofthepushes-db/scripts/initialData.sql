@@ -1,0 +1,6 @@
+-- INSERT INTO continents (continent_iso_code, continent_name) VALUE ("SA", "South America");
+-- INSERT INTO countries (country_iso_code, country_name, continent_id) VALUE ("BR", "Brazil", 1);
+-- INSERT INTO users (active, birthday, email, first_name, full_name, last_name, password, country_id) VALUE (true, '2000-07-04', "viniciusmarc_@hotmail.com", "Vinícius", "Vieira", "Vinícius Marcondes Vieira", "qwe123", 1);
+-- INSERT INTO characters (enabled, first_name, full_name, last_name, user_id) VALUE (true, "Parseval", "Parseval", "", 1);
+-- INSERT INTO adventure_table (table_name) VALUE ("test");
+-- INSERT INTO users_tables (user_id, adventure_table_id) VALUE (1,1);
