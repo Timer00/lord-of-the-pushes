@@ -1,0 +1,21 @@
+### Docker ###
+docker/
+!docker/lordofthepushes-app/*
+.dockerignore
+
+### Maven ###
+target/
+mvnw
+mvnw.cmd
+.mvn
+
+### Git ###
+.gitignore
+.git/
+
+### Inteliji ###
+.idea
+*.iml
+
+### Misc ###
+*.log
