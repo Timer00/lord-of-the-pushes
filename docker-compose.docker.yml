@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  lordofthepushes-local-app:
+    build: .
+    image: lordofthepushes
+    container_name: lordofthepushes-local-app
+    hostname: lordofthepushes-local-app
+    environment:
+      DB_HOST: jdbc:postgresql://lordofthepushes-local-db:5432/lordofthepushes
+      DB_USERNAME: lordofthepushes
+      DB_PASSWORD: qwe123
+      spring_profiles_active: docker
+    volumes:
+      - ./docker/lordofthepushes-app/mvn_repo:/workspace/lordofthepushes/.m2
+    networks:
+      lordofthepushes-local-net:
+        aliases:
+          - lordofthepushes-local-app
+    depends_on:
+      - lordofthepushes-local-db
+
+  lordofthepushes-local-web:
+    build: docker/lordofthepushes-web
+    image: nginx:1.19.10-alpine
+    container_name: lordofthepushes-local-web
+    hostname: lordofthepushes-local-web
+    volumes:
+      - ./docker/lordofthepushes-web/conf.d/lordofthepushes-local-web.conf:/etc/nginx/conf.d/lordofthepushes-local-web.conf
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      lordofthepushes-local-net:
+        ipv4_address: 172.100.10.4
+    depends_on:
+      - lordofthepushes-local-app
+
