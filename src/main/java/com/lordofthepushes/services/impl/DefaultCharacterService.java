@@ -6,6 +6,7 @@ import com.lordofthepushes.data.CharacterData;
 import com.lordofthepushes.data.UserData;
 import com.lordofthepushes.exceptions.UnknownIdentifierException;
 import com.lordofthepushes.services.CharacterService;
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.lordofthepushes.util.Util.getJson;
 
-@Service("characterService")
+@Service
 public class DefaultCharacterService implements CharacterService {
 
     private final Logger LOG = LoggerFactory.getLogger(DefaultCharacterService.class);
@@ -25,29 +26,34 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public CharacterData saveCharacter(CharacterData characterData) throws IllegalArgumentException {
-        LOG.debug("Saving character: " + getJson(characterData));
-        if (characterData.getFullName().equals("") || characterData.getFullName() == null) {
+        LOG.debug("Entering DefaultCharacterService.saveCharacter...");
+        if (characterData.getFullName().trim().equals("") || characterData.getFullName() == null) {
             characterData.setFullName(characterData.getFirstName().replaceAll(" ", "")
                     + " " + characterData.getLastName().replaceAll(" ", ""));
         }
+
+        LOG.debug("Saving character: " + getJson(characterData));
         return characterDAO.save(characterData);
     }
 
     @Override
     public CharacterData updateCharacter(CharacterData characterData) {
         LOG.debug("Updating character with id: " + characterData.getCharacterId());
-
-        if (getCharacter(characterData.getCharacterId()) == null){
-            LOG.debug("No character found with ID: " + characterData.getCharacterId());
-
-            throw new UnknownIdentifierException("Failed to get character with id: " + characterData.getCharacterId());
+        try {
+            getCharacter(characterData.getCharacterId());
+            return characterDAO.save(characterData);
+        } catch (UnknownIdentifierException e) {
+            LOG.error(e.getMessage());
+            throw new UnknownIdentifierException(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
-        return characterDAO.save(characterData);
     }
 
     @Override
     public CharacterData deleteCharacter(Long characterId) {
-        LOG.debug("Deleting character with id: " + characterId);
+        LOG.debug("Changing character:" + characterId + " state from active to disabled");
 
         CharacterData deleted = characterDAO.findByCharacterId(characterId);
 
@@ -56,9 +62,9 @@ public class DefaultCharacterService implements CharacterService {
             throw new UnknownIdentifierException("No character fund with id: " + characterId);
         }
 
-        characterDAO.deleteById(characterId);
+        deleted.setEnabled(false);
 
-        return deleted;
+        return saveCharacter(deleted);
     }
 
     @Override
@@ -68,6 +74,12 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public CharacterData getCharacter(Long characterId) {
+
+        if(characterId == null) {
+            LOG.debug("Character ID must not be null");
+            throw new IllegalArgumentException("Character ID must not be null");
+        }
+
         CharacterData result = characterDAO.findByCharacterId(characterId);
 
         if (result == null){
@@ -85,7 +97,7 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public List<CharacterData> getAllCharactersByUser(UserData user) {
-        if (user == null) {
+        if (user.getUserId() == null) {
             LOG.error("User must not be null. User inserted: null");
             throw new IllegalArgumentException("The user id must not be null nor 0");
         }
@@ -94,10 +106,18 @@ public class DefaultCharacterService implements CharacterService {
 
     @Override
     public List<CharacterData> getAllCharactersByUser(Long userId) {
+        LOG.debug("Entering DefaultCharacterService.getAllCharactersByUser...");
         if (userId == null || userId == 0) {
             LOG.error("User id must not be null nor 0. Value inserted: " + userId);
             throw new IllegalArgumentException("The user id must not be null nor 0");
         }
+
+        List<CharacterData> characters = characterDAO.findByUserUserId(userId);
+
+        if (characters.size() == 0) {
+            throw new UnknownIdentifierException("No character found for user with id: " + userId);
+        }
+
         return characterDAO.findByUserUserId(userId);
     }
 

@@ -26,13 +26,11 @@ public class Util {
 
     public static String getJson(Object object) {
         ObjectMapper jsonObject = new ObjectMapper();
-
         try {
             return jsonObject.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             LOG.error("Error while parsing the object to json. Message: " + e.getMessage());
+            return object.toString();
         }
-
-        return object.toString();
     }
 }
