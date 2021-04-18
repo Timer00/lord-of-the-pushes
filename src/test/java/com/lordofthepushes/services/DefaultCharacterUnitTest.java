@@ -4,6 +4,7 @@ import com.lordofthepushes.dao.CharacterDAO;
 import com.lordofthepushes.data.AdventureTableData;
 import com.lordofthepushes.data.CharacterData;
 import com.lordofthepushes.data.UserData;
+import com.lordofthepushes.exceptions.UnknownIdentifierException;
 import com.lordofthepushes.services.impl.DefaultCharacterService;
 import org.junit.jupiter.api.Assertions;
 
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -71,17 +73,51 @@ public class DefaultCharacterUnitTest {
     public void saveCharacterTest() {
         when(characterDAO.save(Mockito.any(CharacterData.class))).thenReturn(characterModel);
 
-        final CharacterData result = characterService.saveCharacter(characterModel);
+        final CharacterData resultComplete = characterService.saveCharacter(characterModel);
 
         verify(characterDAO, times(1)).save(Mockito.any(CharacterData.class));
-        Assertions.assertEquals(characterModel, result);
+        Assertions.assertEquals(characterModel, resultComplete);
+    }
+
+    @Test
+    public void saveCharacterNoFullNameTest() {
+        CharacterData characterNoMiddleName = characterModel;
+        characterNoMiddleName.setFullName(" ");
+
+        when(characterDAO.save(characterNoMiddleName)).thenReturn(characterNoMiddleName);
+
+        final CharacterData resultNoMiddleName = characterService.saveCharacter(characterModel);
+
+        verify(characterDAO, times(1)).save(characterNoMiddleName);
+        Assertions.assertEquals(characterNoMiddleName, resultNoMiddleName);
     }
 
     @Test
     public void deleteCharacterTest() {
+        CharacterData deleted = characterModel;
+        deleted.setEnabled(false);
+
         when(characterDAO.findByCharacterId(CHARACTER_ID)).thenReturn(characterModel);
-        characterService.deleteCharacter(CHARACTER_ID);
-        verify(characterDAO, times(1)).deleteById(CHARACTER_ID);
+        when(characterDAO.save(deleted)).thenReturn(deleted);
+
+        CharacterData result = characterService.deleteCharacter(CHARACTER_ID);
+
+        verify(characterDAO, times(1)).save(deleted);
+        Assertions.assertEquals(deleted, result);
+    }
+
+    @Test
+    public void deleteCharacterNotFoundTest() {
+        CharacterData deleted = characterModel;
+        deleted.setEnabled(false);
+
+        when(characterDAO.findByCharacterId(CHARACTER_ID)).thenReturn(null);
+
+        Exception exception = Assertions.assertThrows(UnknownIdentifierException.class, () -> characterService.deleteCharacter(CHARACTER_ID));
+
+        String message = exception.getMessage();
+
+        Assertions.assertTrue(message.contains("No character fund with id: " + deleted.getCharacterId()));
     }
 
     @Test
@@ -96,6 +132,36 @@ public class DefaultCharacterUnitTest {
 
         verify(characterDAO, times(1)).save(updatedCharacter);
         Assertions.assertEquals(updatedCharacter, result);
+    }
+
+    @Test
+    public void updateCharacterTestNoCharacterFound() {
+        CharacterData updatedCharacter = characterModel;
+        updatedCharacter.setCharacterId(2L);
+
+        when(characterDAO.findByCharacterId(2L)).thenReturn(null);
+        when(characterDAO.save(updatedCharacter)).thenReturn(updatedCharacter);
+
+        Exception exception = Assertions.assertThrows(UnknownIdentifierException.class, () -> characterService.updateCharacter(updatedCharacter));
+
+        String thrownMessage = exception.getMessage();
+
+        Assertions.assertTrue(thrownMessage.contains("Failed to get character with id: " + updatedCharacter.getCharacterId()));
+    }
+
+    @Test
+    public void updateCharacterIdNullTest() {
+        CharacterData updatedCharacter = characterModel;
+        updatedCharacter.setCharacterId(null);
+
+        when(characterDAO.findByCharacterId(CHARACTER_ID)).thenReturn(updatedCharacter);
+        when(characterDAO.save(updatedCharacter)).thenReturn(updatedCharacter);
+
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> characterService.updateCharacter(updatedCharacter));
+
+        String thrownMessage = exception.getMessage();
+
+        Assertions.assertTrue(thrownMessage.contains("Character ID must not be null"));
     }
 
     @Test
@@ -147,7 +213,36 @@ public class DefaultCharacterUnitTest {
     }
 
     @Test
-    public void getAllCharacterByTable() {
+    public void getAllCharactersByUserNullTest() {
+        UserData user = new UserData();
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> characterService.getAllCharactersByUser(user));
+
+        String message = exception.getMessage();
+
+        Assertions.assertTrue(message.contains("The user id must not be null nor 0"));
+    }
+
+    @Test
+    public void getAllCharactersByUserIdNullTest() {
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> characterService.getAllCharactersByUser((Long)null));
+
+        String message = exception.getMessage();
+
+        Assertions.assertTrue(message.contains("The user id must not be null nor 0"));
+    }
+
+    @Test
+    public void getAllCharactersByUserIdNoCharacterFoundTest() {
+        when(characterDAO.findByUserUserId(USER_ID)).thenReturn(new ArrayList<>());
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> characterService.getAllCharactersByUser(USER_ID));
+
+        String message = exception.getMessage();
+
+        Assertions.assertTrue(message.contains("No character found for user with id: " + USER_ID));
+    }
+
+    @Test
+    public void getAllCharactersByTable() {
         final List<CharacterData> characterModels = Collections.singletonList(characterModel);
 
         when(characterDAO.findByTable(Mockito.any(AdventureTableData.class))).thenReturn(characterModels);

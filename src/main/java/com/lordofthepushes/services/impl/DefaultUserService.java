@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-@Service("userService")
+import java.util.Optional;
+
+@Service
 public class DefaultUserService implements UserService {
     private static final Logger LOG = LogManager.getLogger(DefaultUserService.class);
 
@@ -38,13 +40,14 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public UserData getUserById(Long userId) throws UnknownIdentifierException {
+    public UserData getUserById(Long userId) {
         Assert.notNull(userId, "User Id must not be null!");
-        try {
-            return userDAO.findById(userId).get();
-        } catch (UnknownIdentifierException e){
+        Optional<UserData> user = userDAO.findById(userId);
+        if (!user.isPresent()) {
             throw new UnknownIdentifierException("User " + userId + " not found!");
         }
+
+        return user.get();
     }
 
     @Override
